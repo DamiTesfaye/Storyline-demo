@@ -34,22 +34,22 @@ export default class DragRecognizer extends CoordinatesRecognizer<'drag'> {
       this.isEventTypeTouch(_lastEventType) &&
       !this.isEventTypeTouch(event.type)
     ) {
-      const delay = Math.abs(event.timeStamp - this.state.startTime)
+      const delay = Math.abs(event.timeStamp - (this.state.startTime ?? 0))
       if (delay < FILTER_REPEATED_EVENTS_DELAY) return false
     }
 
     return this.enabled && touches < 2
   }
 
-  private setPointers = (event: UseGestureEvent<PointerEvent>) => {
+  private setPointers = (event: PointerEvent) => {
     const { currentTarget, pointerId } = event
-    if (currentTarget) currentTarget.setPointerCapture(pointerId)
+    if (currentTarget) (currentTarget as Element).setPointerCapture(pointerId)
     this.updateGestureState({ currentTarget, pointerId })
   }
 
   private removePointers = () => {
     const { currentTarget, pointerId } = this.state
-    if (currentTarget && pointerId) currentTarget.releasePointerCapture(pointerId)
+    if (currentTarget && pointerId) (currentTarget as Element).releasePointerCapture(pointerId)
   }
 
   private setListeners = (isTouch: boolean) => {
@@ -169,10 +169,10 @@ export default class DragRecognizer extends CoordinatesRecognizer<'drag'> {
     }
 
     this.updateGestureState({
-      event,
       ...endState,
       tap: _isTap,
       swipe,
+      event,
     })
     this.fireGestureHandler(this.config.filterTaps && this.state._isTap)
   }

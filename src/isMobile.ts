@@ -1,3 +1,15 @@
+interface NavigatorDetails {
+  userAgent: string;
+  platform: string;
+  maxTouchPoints: number;
+}
+
+/**
+ * MSStream is a non-standard property injected by Internet Explorer 11.
+ * We declare it here to make TypeScript happy.
+ */
+declare var MSStream: any;
+
 var appleIphone = /iPhone/i;
 var appleIpod = /iPod/i;
 var appleTablet = /iPad/i;
@@ -13,18 +25,17 @@ var otherBlackBerry10 = /BB10/i;
 var otherOpera = /Opera Mini/i;
 var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
 var otherFirefox = /Mobile(?:.+)Firefox\b/i;
-var isAppleTabletOnIos13 = function (navigator) {
+var isAppleTabletOnIos13 = function (navigator: NavigatorDetails): boolean {
     return (typeof navigator !== 'undefined' &&
         navigator.platform === 'MacIntel' &&
-        typeof navigator.maxTouchPoints === 'number' &&
         navigator.maxTouchPoints > 1 &&
         typeof MSStream === 'undefined');
 };
-function createMatch(userAgent) {
-    return function (regex) { return regex.test(userAgent); };
+function createMatch(userAgent: string) {
+    return (regex: RegExp) => regex.test(userAgent);
 }
-export default function isMobile(param) {
-    var nav = {
+export default function isMobile(param?: string | Partial<NavigatorDetails>) {
+    var nav: NavigatorDetails = {
         userAgent: '',
         platform: '',
         maxTouchPoints: 0
@@ -39,10 +50,10 @@ export default function isMobile(param) {
     else if (typeof param === 'string') {
         nav.userAgent = param;
     }
-    else if (param && param.userAgent) {
+    else if (param && typeof param !== 'string' && param.userAgent) {
         nav = {
             userAgent: param.userAgent,
-            platform: param.platform,
+            platform: param.platform || '',
             maxTouchPoints: param.maxTouchPoints || 0
         };
     }
@@ -122,4 +133,32 @@ export default function isMobile(param) {
         result.apple.tablet || result.android.tablet || result.windows.tablet;
     return result;
 }
-//# sourceMappingURL=isMobile.js.map
+
+// function getNavigatorDetails(param?: string | Partial<NavigatorDetails>): NavigatorDetails {
+//     if (!param && typeof navigator !== 'undefined') {
+//         return {
+//             userAgent: navigator.userAgent,
+//             platform: navigator.platform,
+//             maxTouchPoints: navigator.maxTouchPoints || 0,
+//         };
+//     }
+//
+//     if (typeof param === 'string') {
+//         return {userAgent: param, platform: '', maxTouchPoints: 0};
+//     }
+//
+//     if (param) {
+//         return {
+//             userAgent: param.userAgent || '',
+//             platform: param.platform || '',
+//             maxTouchPoints: param.maxTouchPoints || 0,
+//         };
+//     }
+//
+//     return {userAgent: '', platform: '', maxTouchPoints: 0};
+// }
+//
+// export default function isMobile(param?: string | Partial<NavigatorDetails>) {
+//     const nav = getNavigatorDetails(param);
+//     // ... rest of the function logic using `nav`
+// }

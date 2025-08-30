@@ -1,3 +1,4 @@
+import React from 'react'
 import useRecognizers from './useRecognizers'
 import MoveRecognizer from '../recognizers/MoveRecognizer'
 import { Handler, InternalConfig, HookReturnType, UseMoveConfig } from '../types'
@@ -12,24 +13,46 @@ import { getInternalGenericOptions, getInternalCoordinatesOptions } from '../uti
  * @param {(Config | {})} [config={}] - the config object including generic options and move options
  * @returns {(...args: any[]) => HookReturnType<Config>}
  */
+// export function useMove<Config extends UseMoveConfig>(
+//   handler: Handler<'move'>,
+//   config: Config | {} = {}
+// ): (...args: any[]) => HookReturnType<Config> {
+//   const { domTarget, eventOptions, window, ...move } = config as UseMoveConfig
+//
+//   /**
+//    * TODO: at the moment we recompute the config object at every render
+//    * this could probably be optimized
+//    */
+//   const mergedConfig: InternalConfig = {
+//     ...getInternalGenericOptions({
+//       domTarget,
+//       eventOptions,
+//       window,
+//     }),
+//     move: getInternalCoordinatesOptions(move),
+//   }
+//
+//   return useRecognizers<Config>({ move: handler }, [MoveRecognizer], mergedConfig)
+// }
+
 export function useMove<Config extends UseMoveConfig>(
-  handler: Handler<'move'>,
-  config: Config | {} = {}
+    handler: Handler<'move'>,
+    config: Config | {} = {}
 ): (...args: any[]) => HookReturnType<Config> {
   const { domTarget, eventOptions, window, ...move } = config as UseMoveConfig
 
-  /**
-   * TODO: at the moment we recompute the config object at every render
-   * this could probably be optimized
-   */
-  const mergedConfig: InternalConfig = {
-    ...getInternalGenericOptions({
-      domTarget,
-      eventOptions,
-      window,
-    }),
-    move: getInternalCoordinatesOptions(move),
-  }
+  const mergedConfig: InternalConfig = React.useMemo(
+      () => ({
+        ...getInternalGenericOptions({
+          domTarget,
+          eventOptions,
+          window,
+        }),
+        move: getInternalCoordinatesOptions(move),
+      }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [domTarget, eventOptions, window, JSON.stringify(move)]
+  )
 
   return useRecognizers<Config>({ move: handler }, [MoveRecognizer], mergedConfig)
 }

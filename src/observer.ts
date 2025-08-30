@@ -1,4 +1,4 @@
-import { forwardRef, memo } from "react"
+import React, { forwardRef, memo, ForwardRefRenderFunction } from "react"
 
 import { isUsingStaticRendering } from "./staticRendering"
 import { useObserver } from "./useObserver"
@@ -8,25 +8,33 @@ export interface IObserverOptions {
 }
 
 export function observer<P extends object, TRef = {}>(
-    baseComponent: React.RefForwardingComponent<TRef, P>,
+    baseComponent: ForwardRefRenderFunction<TRef, P>,
     options: IObserverOptions & { forwardRef: true }
 ): React.MemoExoticComponent<
     React.ForwardRefExoticComponent<React.PropsWithoutRef<P> & React.RefAttributes<TRef>>
 >
 
-export function observer<P extends object>(
-    baseComponent: React.FunctionComponent<P>,
+
+export function observer<P extends object, TRef = {}>(
+    baseComponent: ForwardRefRenderFunction<TRef, P>,
+    options: IObserverOptions & { forwardRef: true }
+): React.MemoExoticComponent<
+    React.ForwardRefExoticComponent<React.PropsWithoutRef<P> & React.RefAttributes<TRef>>
+>
+
+export function observer<P extends object, TRef = {}>(
+    baseComponent: ForwardRefRenderFunction<TRef, P>,
     options?: IObserverOptions
 ): React.FunctionComponent<P>
 
 export function observer<
-    C extends React.FunctionComponent<any> | React.RefForwardingComponent<any>,
+    C extends React.FunctionComponent<any> | ForwardRefRenderFunction<any, any>,
     Options extends IObserverOptions
 >(
     baseComponent: C,
     options?: Options
-): Options extends { forwardRef: true }
-    ? C extends React.RefForwardingComponent<infer TRef, infer P>
+): Options extends { forwardRef: true } //
+    ? C extends ForwardRefRenderFunction<infer TRef, infer P>
         ? C &
               React.MemoExoticComponent<
                   React.ForwardRefExoticComponent<
@@ -37,11 +45,12 @@ export function observer<
     : C & { displayName: string }
 
 // n.b. base case is not used for actual typings or exported in the typing files
-export function observer<P extends object, TRef = {}>(
-    baseComponent: React.RefForwardingComponent<TRef, P>,
-    options?: IObserverOptions
-) {
-    // The working of observer is explained step by step in this talk: https://www.youtube.com/watch?v=cPF4iBedoF0&feature=youtu.be&t=1307
+// export function observer<P extends object, TRef = {}>(
+//     baseComponent: ForwardRefRenderFunction<TRef, P>,
+//     options?: IObserverOptions
+// ) {
+    export function observer(baseComponent: any, options?: IObserverOptions) {
+        // The working of observer is explained step by step in this talk: https://www.youtube.com/watch?v=cPF4iBedoF0&feature=youtu.be&t=1307
     if (isUsingStaticRendering()) {
         return baseComponent
     }
@@ -53,10 +62,10 @@ export function observer<P extends object, TRef = {}>(
 
     const baseComponentName = baseComponent.displayName || baseComponent.name
 
-    const wrappedComponent = (props: P, ref: React.Ref<TRef>) => {
-        return useObserver(() => baseComponent(props, ref), baseComponentName)
-    }
-    wrappedComponent.displayName = baseComponentName
+    // const wrappedComponent = (props: P, ref: React.Ref<TRef>) => {
+    //     return useObserver(() => baseComponent(props, ref), baseComponentName)
+    // }
+    // wrappedComponent.displayName = baseComponentName
 
     // memo; we are not interested in deep updates
     // in props; we assume that if deep objects are changed,
@@ -67,13 +76,22 @@ export function observer<P extends object, TRef = {}>(
         // 1. it cannot go before memo, only after it
         // 2. forwardRef converts the function into an actual component, so we can't let the baseComponent do it
         //    since it wouldn't be a callable function anymore
-        memoComponent = memo(forwardRef(wrappedComponent))
+        const wrappedComponent = (props: any, ref: React.Ref<any>) => {
+            return useObserver(() => baseComponent(props, ref), baseComponentName)
+        }
+
+        wrappedComponent.displayName = baseComponentName
     } else {
-        memoComponent = memo(wrappedComponent)
+        const wrappedComponent = (props: any) => {
+            return useObserver(() => baseComponent(props), baseComponentName)
+        }
+        wrappedComponent.displayName = baseComponentName
+
+        memoComponent = memo(forwardRef(wrappedComponent))
     }
 
     copyStaticProperties(baseComponent, memoComponent)
-    memoComponent.displayName = baseComponentName
+    // memoComponent.displayName = baseComponentName
 
     return memoComponent
 }

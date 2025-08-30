@@ -1,12 +1,5 @@
-// @flow
 import validAttr from '@emotion/is-prop-valid';
-import React, {
-  createElement,
-  useContext,
-  useDebugValue,
-  type AbstractComponent,
-  type Ref,
-} from 'react';
+import React, { createElement, useContext, useDebugValue } from 'react';
 import hoist from 'hoist-non-react-statics';
 import merge from '../utils/mixinDeep';
 import ComponentStyle from './ComponentStyle';
@@ -25,15 +18,14 @@ import { ThemeContext } from './ThemeProvider';
 import { useStyleSheet, useStylis } from './StyleSheetManager';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from '../utils/empties';
 
-import type { Attrs, RuleSet, Target } from '../types';
 
-/* global $Call */
+import { Attrs, RuleSet, StyledComponentWrapper, Target } from '../types';
 
-const identifiers = {};
+const identifiers: { [key: string]: number } = {};
 
 /* We depend on components having unique IDs */
-function generateId(displayName: string, parentComponentId: string) {
-  const name = typeof displayName !== 'string' ? 'sc' : escape(displayName);
+function generateId(displayName: string, parentComponentId: string | undefined) {
+  const name = escape(displayName);
   // Ensure that no displayName can lead to duplicate componentIds
   identifiers[name] = (identifiers[name] || 0) + 1;
 
@@ -45,12 +37,12 @@ function useResolvedAttrs<Config>(theme: any = EMPTY_OBJECT, props: Config, attr
   // NOTE: can't memoize this
   // returns [context, resolvedAttrs]
   // where resolvedAttrs is only the things injected by the attrs themselves
-  const context = { ...props, theme };
-  const resolvedAttrs = {};
+  const context: { [key: string]: any } = { ...props, theme };
+  const resolvedAttrs: { [key: string]: any } = {};
 
   attrs.forEach(attrDef => {
-    let resolvedAttrDef = attrDef;
-    let key;
+    let resolvedAttrDef: Record<string, any> = attrDef;
+    let key: string;
 
     if (isFunction(resolvedAttrDef)) {
       resolvedAttrDef = resolvedAttrDef(context);
@@ -69,25 +61,11 @@ function useResolvedAttrs<Config>(theme: any = EMPTY_OBJECT, props: Config, attr
   return [context, resolvedAttrs];
 }
 
-interface StyledComponentWrapperProperties {
-  attrs: Attrs;
-  componentStyle: ComponentStyle;
-  displayName: string;
-  foldedComponentIds: Array<string>;
-  target: Target;
-  shouldForwardProp: ?(prop: string, isValidAttr: (prop: string) => boolean) => boolean;
-  styledComponentId: string;
-  warnTooManyClasses: $Call<typeof createWarnTooManyClasses, string, string>;
-}
-
-type StyledComponentWrapper<Config, Instance> = AbstractComponent<Config, Instance> &
-  StyledComponentWrapperProperties;
-
-function useInjectedStyle<T>(
+function useInjectedStyle<T extends object>(
   componentStyle: ComponentStyle,
   hasAttrs: boolean,
   resolvedAttrs: T,
-  warnTooManyClasses?: $Call<typeof createWarnTooManyClasses, string, string>
+  warnTooManyClasses?: (className: string) => void
 ) {
   const styleSheet = useStyleSheet();
   const stylis = useStylis();
@@ -109,18 +87,16 @@ function useInjectedStyle<T>(
   return className;
 }
 
-function useStyledComponentImpl<Config: {}, Instance>(
+function useStyledComponentImpl<Config extends object, Instance>(
   forwardedComponent: StyledComponentWrapper<Config, Instance>,
-  props: Object,
-  forwardedRef: Ref<any>
+  props: Config & { [key: string]: any },
+  forwardedRef: React.Ref<Instance>
 ) {
   const {
     attrs: componentAttrs,
     componentStyle,
-    // $FlowFixMe
     defaultProps,
     foldedComponentIds,
-    // $FlowFixMe
     shouldForwardProp,
     styledComponentId,
     target,
@@ -149,7 +125,7 @@ function useStyledComponentImpl<Config: {}, Instance>(
   const isTargetTag = isTag(elementToBeCreated);
   const computedProps = attrs !== props ? { ...props, ...attrs } : props;
   const propFilterFn = shouldForwardProp || (isTargetTag && validAttr);
-  const propsForElement = {};
+  const propsForElement: { [key: string]: any } = {};
 
   // eslint-disable-next-line guard-for-in
   for (const key in computedProps) {
@@ -166,40 +142,44 @@ function useStyledComponentImpl<Config: {}, Instance>(
     propsForElement.style = { ...props.style, ...attrs.style };
   }
 
-  propsForElement.className = Array.prototype
-    .concat(
-      foldedComponentIds,
-      styledComponentId,
-      generatedClassName !== styledComponentId ? generatedClassName : null,
-      props.className,
-      attrs.className
-    )
-    .filter(Boolean)
-    .join(' ');
+  propsForElement.className = joinStrings(
+    ...foldedComponentIds,
+    styledComponentId,
+    generatedClassName !== styledComponentId ? generatedClassName : null,
+    props.className,
+    attrs.className
+  );
 
   propsForElement.ref = refToForward;
 
   return createElement(elementToBeCreated, propsForElement);
 }
 
+interface StyledComponentOptions {
+  attrs?: Attrs;
+  displayName?: string;
+  componentId?: string;
+  parentComponentId?: string;
+  shouldForwardProp?: (prop: string, isValidAttr: (prop: string) => boolean) => boolean;
+}
+
 export default function createStyledComponent(
-  target: Target | StyledComponentWrapper<*, *>,
-  options: Object,
+  target: Target,
+  options: StyledComponentOptions = {},
   rules: RuleSet
 ) {
   const isTargetStyledComp = isStyledComponent(target);
   const isCompositeComponent = !isTag(target);
 
-  const {
-    displayName = generateDisplayName(target),
-    componentId = generateId(options.displayName, options.parentComponentId),
-    attrs = EMPTY_ARRAY,
-  } = options;
+  const displayName = options.displayName || generateDisplayName(target);
+  const { attrs = EMPTY_ARRAY } = options;
+
+  const componentId = options.componentId || generateId(displayName, options.parentComponentId);
 
   const styledComponentId =
     options.displayName && options.componentId
-      ? `${escape(options.displayName)}-${options.componentId}`
-      : options.componentId || componentId;
+      ? `${escape(displayName)}-${componentId}`
+      : componentId;
 
   // fold the underlying StyledComponent attrs up (implicit extend)
   const finalAttrs =
@@ -211,13 +191,12 @@ export default function createStyledComponent(
   // eslint-disable-next-line prefer-destructuring
   let shouldForwardProp = options.shouldForwardProp;
 
-  // $FlowFixMe
   if (isTargetStyledComp && target.shouldForwardProp) {
     if (shouldForwardProp) {
       // compose nested shouldForwardProp calls
+      const oldShouldForwardProp = shouldForwardProp;
       shouldForwardProp = (prop, filterFn) =>
-        // $FlowFixMe
-        target.shouldForwardProp(prop, filterFn) && options.shouldForwardProp(prop, filterFn);
+      (target.shouldForwardProp ? target.shouldForwardProp(prop, filterFn) : true) && oldShouldForwardProp(prop, filterFn);
     } else {
       // eslint-disable-next-line prefer-destructuring
       shouldForwardProp = target.shouldForwardProp;
@@ -237,15 +216,16 @@ export default function createStyledComponent(
    * forwardRef creates a new interim component, which we'll take advantage of
    * instead of extending ParentComponent to create _another_ interim class
    */
-  let WrappedStyledComponent;
+  let WrappedStyledComponent: StyledComponentWrapper<any, any>;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const forwardRef = (props, ref) => useStyledComponentImpl(WrappedStyledComponent, props, ref);
+  const forwardRef = (props: any, ref: React.Ref<any>) =>
+    useStyledComponentImpl(WrappedStyledComponent, props, ref);
 
   forwardRef.displayName = displayName;
 
   // $FlowFixMe this is a forced cast to merge it StyledComponentWrapperProperties
-  WrappedStyledComponent = (React.forwardRef(forwardRef): StyledComponentWrapper<*, *>);
+  WrappedStyledComponent = React.forwardRef(forwardRef) as StyledComponentWrapper<any, any>;
 
   WrappedStyledComponent.attrs = finalAttrs;
   WrappedStyledComponent.componentStyle = componentStyle;
@@ -309,7 +289,7 @@ export default function createStyledComponent(
   WrappedStyledComponent.toString = () => `.${WrappedStyledComponent.styledComponentId}`;
 
   if (isCompositeComponent) {
-    hoist(WrappedStyledComponent, (target: any), {
+    hoist(WrappedStyledComponent, target as any, {
       // all SC-specific things should not be hoisted
       attrs: true,
       componentStyle: true,

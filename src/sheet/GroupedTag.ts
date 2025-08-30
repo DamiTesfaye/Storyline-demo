@@ -1,7 +1,4 @@
-// @flow
-/* eslint-disable no-use-before-define */
-
-import type { GroupedTag, Tag } from './types';
+import { GroupedTag, Tag } from '../types';
 import { SPLITTER } from '../constants';
 import throwStyledError from '../utils/error';
 
@@ -13,7 +10,7 @@ export const makeGroupedTag = (tag: Tag): GroupedTag => {
 const BASE_SIZE = 1 << 9;
 
 class DefaultGroupedTag implements GroupedTag {
-  groupSizes: Uint32Array;
+  private groupSizes: Uint32Array;
 
   length: number;
 

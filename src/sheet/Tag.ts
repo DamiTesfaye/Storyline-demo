@@ -1,8 +1,5 @@
-// @flow
-/* eslint-disable no-use-before-define */
-
 import { makeStyleTag, getSheet } from './dom';
-import type { SheetOptions, Tag } from './types';
+import type { SheetOptions, Tag } from '../types';
 
 /** Create a CSSStyleSheet-like tag depending on the environment */
 export const makeTag = ({ isServer, useCSSOMInjection, target }: SheetOptions): Tag => {
@@ -50,7 +47,7 @@ export class CSSOMTag implements Tag {
   getRule(index: number): string {
     const rule = this.sheet.cssRules[index];
     // Avoid IE11 quirk where cssText is inaccessible on some invalid rules
-    if (rule !== undefined && typeof rule.cssText === 'string') {
+    if (rule !== undefined) {
       return rule.cssText;
     } else {
       return '';
@@ -62,7 +59,7 @@ export class CSSOMTag implements Tag {
 export class TextTag implements Tag {
   element: HTMLStyleElement;
 
-  nodes: NodeList<Node>;
+  nodes: NodeList;
 
   length: number;
 
@@ -91,7 +88,7 @@ export class TextTag implements Tag {
 
   getRule(index: number): string {
     if (index < this.length) {
-      return this.nodes[index].textContent;
+      return this.nodes[index].textContent ?? '';
     } else {
       return '';
     }

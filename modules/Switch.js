@@ -21,7 +21,7 @@ class Switch extends React.Component {
           let element, match;
 
           // We use React.Children.forEach instead of React.Children.toArray().find()
-          // here because toArray adds keys to all child elements and we do not want
+          // here because toArray adds keys to all child elements, and we do not want
           // to trigger an unmount/remount for two <Route>s that render the same
           // component at different URLs.
           React.Children.forEach(this.props.children, child => {

@@ -4,9 +4,9 @@ import React from "react"
 import { isPlainObject } from "./utils"
 
 export function useAsObservableSourceInternal<TSource>(
-    current: TSource,
+    current: TSource | undefined,
     usedByLocalStore: boolean
-): TSource {
+): TSource | undefined {
     const culprit = usedByLocalStore ? "useLocalStore" : "useAsObservableSource"
     if (__DEV__ && usedByLocalStore) {
         const [initialSource] = React.useState(current)
@@ -18,7 +18,7 @@ export function useAsObservableSourceInternal<TSource>(
         }
     }
     if (usedByLocalStore && current === undefined) {
-        return undefined as any
+        return undefined
     }
     if (__DEV__ && !isPlainObject(current)) {
         throw new Error(
@@ -26,8 +26,18 @@ export function useAsObservableSourceInternal<TSource>(
         )
     }
 
+    // const [res] = React.useState(() => observable(current, {}, { deep: false }))
+    // if (__DEV__ && Object.keys(res).length !== Object.keys(current).length) {
+    // The checks above guarantee that `current` is an object here.
+    // This check is to satisfy TypeScript's strict null checks.
+    if (!current) {
+        // This code is unreachable given the checks above, but it helps type narrowing.
+        throw new Error("`useAsObservableSource` expects a plain object.")
+    }
+
     const [res] = React.useState(() => observable(current, {}, { deep: false }))
     if (__DEV__ && Object.keys(res).length !== Object.keys(current).length) {
+
         throw new Error(`the shape of objects passed to ${culprit} should be stable`)
     }
     runInAction(() => {
@@ -36,6 +46,9 @@ export function useAsObservableSourceInternal<TSource>(
     return res
 }
 
-export function useAsObservableSource<TSource>(current: TSource): TSource {
-    return useAsObservableSourceInternal(current, false)
-}
+// export function useAsObservableSource<TSource>(current: TSource): TSource {
+//     return useAsObservableSourceInternal(current, false)
+    export function useAsObservableSource<TSource extends object>(current: TSource): TSource {
+        // The cast is safe because we know `undefined` is not returned when `usedByLocalStore` is `false`.
+        return useAsObservableSourceInternal(current, false) as TSource
+    }

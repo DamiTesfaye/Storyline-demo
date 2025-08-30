@@ -1,12 +1,10 @@
-// @flow
-
 import flatten from '../utils/flatten';
 import { hash, phash } from '../utils/hash';
 import generateName from '../utils/generateAlphabeticName';
 import isStaticRules from '../utils/isStaticRules';
-import StyleSheet from '../sheet';
+import StyleSheet from '../sheet/Sheet';
 
-import type { RuleSet, Stringifier } from '../types';
+import { RuleSet, Stringifier, Sheet } from '../types';
 
 /*
  ComponentStyle is all the CSS-specific stuff, not
@@ -40,7 +38,7 @@ export default class ComponentStyle {
    * Hashes it, wraps the whole chunk in a .hash1234 {}
    * Returns the hash to be injected on render()
    * */
-  generateAndInjectStyles(executionContext: Object, styleSheet: StyleSheet, stylis: Stringifier) {
+  generateAndInjectStyles(executionContext: object, styleSheet: Sheet, stylis: Stringifier): string {
     const { componentId } = this;
 
     // force dynamic classnames if user-supplied stylis plugins are in use
@@ -55,7 +53,7 @@ export default class ComponentStyle {
       if (!styleSheet.hasNameForId(componentId, name)) {
         const cssStaticFormatted = stylis(cssStatic, `.${name}`, undefined, componentId);
 
-        styleSheet.insertRules(componentId, name, cssStaticFormatted);
+        styleSheet.insertRules(componentId, name, [cssStaticFormatted]);
       }
 
       this.staticRulesId = name;
@@ -84,7 +82,7 @@ export default class ComponentStyle {
 
       if (!styleSheet.hasNameForId(componentId, name)) {
         const cssFormatted = stylis(css, `.${name}`, undefined, componentId);
-        styleSheet.insertRules(componentId, name, cssFormatted);
+        styleSheet.insertRules(componentId, name, [cssFormatted]);
       }
 
       return name;

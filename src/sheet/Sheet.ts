@@ -1,6 +1,5 @@
-// @flow
 import { DISABLE_SPEEDY, IS_BROWSER } from '../constants';
-import type { GroupedTag, Sheet, SheetOptions } from './types';
+import { GroupedTag, Sheet, SheetOptions } from '../types';
 import { makeTag } from './Tag';
 import { makeGroupedTag } from './GroupedTag';
 import { getGroupForId } from './GroupIDAllocator';
@@ -30,7 +29,7 @@ export default class StyleSheet implements Sheet {
 
   options: SheetOptions;
 
-  tag: void | GroupedTag;
+  tag: GroupedTag | undefined;
 
   /** Register a group ID to give it an index */
   static registerId(id: string): number {
@@ -39,7 +38,7 @@ export default class StyleSheet implements Sheet {
 
   constructor(
     options: SheetConstructorArgs = defaultOptions,
-    globalStyles?: GlobalStylesAllocationMap = {},
+    globalStyles: GlobalStylesAllocationMap = {},
     names?: NamesAllocationMap
   ) {
     this.options = {
@@ -72,7 +71,7 @@ export default class StyleSheet implements Sheet {
 
   /** Check whether a name is known for caching */
   hasNameForId(id: string, name: string): boolean {
-    return this.names.has(id) && (this.names.get(id): any).has(name);
+    return this.names.has(id) && this.names.get(id)!.has(name);
   }
 
   /** Mark a group's name as known for caching */
@@ -80,11 +79,11 @@ export default class StyleSheet implements Sheet {
     getGroupForId(id);
 
     if (!this.names.has(id)) {
-      const groupNames = new Set();
+      const groupNames = new Set<string>();
       groupNames.add(name);
       this.names.set(id, groupNames);
     } else {
-      (this.names.get(id): any).add(name);
+      this.names.get(id)!.add(name);
     }
   }
 
@@ -97,7 +96,7 @@ export default class StyleSheet implements Sheet {
   /** Clears all cached names for a given group ID */
   clearNames(id: string) {
     if (this.names.has(id)) {
-      (this.names.get(id): any).clear();
+      this.names.get(id)!.clear();
     }
   }
 

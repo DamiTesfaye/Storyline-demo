@@ -1,5 +1,3 @@
-// @flow
-
 import throwStyledError from '../utils/error';
 
 const MAX_SMI = 1 << 31 - 1;
@@ -16,7 +14,7 @@ export const resetGroupIds = () => {
 
 export const getGroupForId = (id: string): number => {
   if (groupIDRegister.has(id)) {
-    return (groupIDRegister.get(id): any);
+    return groupIDRegister.get(id)!;
   }
 
   const group = nextFreeGroup++;
