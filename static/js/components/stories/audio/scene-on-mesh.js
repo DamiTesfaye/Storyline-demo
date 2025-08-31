@@ -1,4 +1,4 @@
-import { OrthographicCamera } from "drei";
+import { OrthographicCamera } from "@react-three/drei";
 import renderTargetPool from "pools/render-targets";
 import React, {
   useMemo,

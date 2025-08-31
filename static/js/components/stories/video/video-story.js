@@ -1,6 +1,6 @@
 import Chance from "chance";
 import Subtitles from "components/subtitles";
-import { HTML } from "drei";
+import { HTML } from "@react-three/drei";
 import useCheckIsOnScreen from "hooks/use-check-is-on-screen";
 import useMedia from "hooks/use-media";
 import { useStore } from "hooks/use-store";
