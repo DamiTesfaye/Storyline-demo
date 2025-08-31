@@ -1,7 +1,7 @@
 import platform from "platform";
-import preflightFailMessage from "preflight-fail.partial.html";
-import "./index.css";
-import "./style.css";
+import preflightFailMessage from "./preflight-fail.partial.html?raw";
+import "../css/index.css";
+import "../css/style.css";
 
 const start = async () => {
   let module;

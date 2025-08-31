@@ -4,22 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "start": "vite"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.3.1",
     "history": "^5.3.0",
-    "mobx": "^6.12.0",
-    "mobx-react-lite": "^4.0.5",
+    "mobx": "^6.13.7",
+    "mobx-react-lite": "^4.1.0",
     "path-to-regexp": "^8.2.0",
+    "platform": "^1.3.6",
     "prop-types": "^15.8.1",
+    "ismobilejs": "^1.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^19.1.1",
-    "react-router-dom": "^6.22.3",
+    "react-router-dom": "^5.3.4",
     "tiny-invariant": "^1.3.3",
     "tiny-warning": "^1.0.3"
   },
@@ -29,8 +32,10 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "hoist-non-react-statics": "^3.3.2",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "@vitejs/plugin-react": "^5.0.2",
+    "vite": "^7.1.3",
+    "vitest": "^3.2.4"
   },
   "browserslist": {
     "production": [
