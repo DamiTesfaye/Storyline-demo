@@ -6,7 +6,7 @@ import { isEqual } from "lodash";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { animated, useSpring } from "@react-spring/three";
-import { useFrame, useThree } from "react-three-fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import issues from "services/issues";
 import * as THREE from "three";
 import createPointerEvents from "utils/create-pointer-events";

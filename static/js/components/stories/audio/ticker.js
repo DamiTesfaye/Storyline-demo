@@ -7,7 +7,7 @@ import {
   useMemo,
   useLayoutEffect,
 } from "react";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { preloadFont, TextMesh } from "troika-3d-text";
 import useWhyDidYouUpdate from "hooks/use-why-did-you-update";

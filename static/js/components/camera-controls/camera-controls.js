@@ -3,7 +3,7 @@ import { map } from "math/map";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { animated, interpolate, useSpring } from "@react-spring/three";
-import { useThree } from "react-three-fiber";
+import { useThree } from "@react-three/fiber";
 import { useDrag, useMove } from "react-use-gesture";
 import issues from "services/issues";
 

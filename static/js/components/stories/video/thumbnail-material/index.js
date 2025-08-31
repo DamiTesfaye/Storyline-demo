@@ -5,7 +5,7 @@ import * as THREE from "three";
 import fragmentShader from "./shader.frag?raw";
 // import vertexShader from "./shader.vert";
 import vertexShader from "./shader.vert?raw";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 
 const ThumbnailMaterial = React.forwardRef((props, ref) => {
   //console.log(props.offsetX);

@@ -9,7 +9,7 @@ import {
 } from "postprocessing";
 import { default as React, useEffect, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/three";
-import { extend, useFrame, useThree } from "react-three-fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import glQuality from "services/gl-quality";
 import issues from "services/issues";
 import { BarrelEffect } from "./effects/barrel";

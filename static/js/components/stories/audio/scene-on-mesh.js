@@ -7,7 +7,7 @@ import React, {
   useLayoutEffect,
   useCallback,
 } from "react";
-import { createPortal, useFrame, useThree } from "react-three-fiber";
+import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { ceilPOT } from "math";
 import { throttle } from "lodash";
