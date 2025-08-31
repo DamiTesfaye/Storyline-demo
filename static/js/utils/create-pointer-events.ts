@@ -3,10 +3,10 @@
 // which in this particular situation feels incredibly unintuitive.
 // The function below will measure how far a user has moved their cursor and if
 // above a certain threshold, wont trigger a mouse up event
-const createPointerEvents = (f) => {
+const createPointerEvents = (f: () => void) => {
   let isDown = false;
   let downScreenPosition = { x: 0, y: 0 };
-  const onPointerUp = (e) => {
+  const onPointerUp = (e: PointerEvent) => {
     const currScreenPosition = { x: e.screenX, y: e.screenY };
     const diffScreenPosition = {
       x: currScreenPosition.x - downScreenPosition.x,
@@ -23,7 +23,7 @@ const createPointerEvents = (f) => {
       f();
     }
   };
-  const onPointerDown = (e) => {
+  const onPointerDown = (e: PointerEvent) => {
     downScreenPosition = { x: e.screenX, y: e.screenY };
     isDown = true;
   };

@@ -5,7 +5,7 @@ import issues from "services/issues";
 import App from "./app";
 import noopConsole from "./noop-console";
 
-export const main = async () => {
+export const main = async (): Promise<void> => {
   const hello = `
   Hello! Coded by us:
   🧐matt@gun.net.au | @ktingvoar

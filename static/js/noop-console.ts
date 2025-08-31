@@ -1,5 +1,5 @@
-const noopConsole = () => {
-  const methods = [
+const noopConsole = (): void => {
+  const methods: (keyof Console)[] = [
     "assert",
     "clear",
     "count",
@@ -24,7 +24,8 @@ const noopConsole = () => {
     "log",
   ];
   methods.forEach((method) => {
-    console[method] = () => {};
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    (console[method] as any) = () => {};
   });
 };
 

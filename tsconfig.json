@@ -7,7 +7,6 @@
       "esnext"
     ],
     "allowJs": true,
-    "checkJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -19,11 +18,25 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "components/*": ["static/js/components/*"],
+      "containers/*": ["static/js/containers/*"],
+      "hooks/*": ["static/js/hooks/*"],
+      "services/*": ["static/js/services/*"],
+      "context": ["static/js/context"],
+      "context/*": ["static/js/context/*"],
+      "store": ["static/js/store"],
+      "store/*": ["static/js/store/*"],
+      "utils/*": ["static/js/utils/*"],
+      "math": ["static/js/math"],
+      "math/*": ["static/js/math/*"],
+      "pools/*": ["static/js/pools/*"]
+    },
+    "experimentalDecorators": true
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src", "static/js/**/*.ts", "static/js/**/*.tsx"],
   "exclude": [
     "node_modules",
     "build"

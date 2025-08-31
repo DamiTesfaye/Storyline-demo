@@ -1,5 +1,5 @@
 import platform from "platform";
-import preflightFailMessage from "preflight-fail.partial.html";
+import preflightFailMessage from "./preflight-fail.partial.html?raw";
 import "./index.css";
 import "./style.css";
 
