@@ -1,8 +1,8 @@
 import { preloadFont } from "troika-3d-text";
 import usePromise from "react-promise-suspense";
 
-const load = (url) => {
-  return new Promise((resolve, reject) => {
+const load = (url: string): Promise<void> => {
+  return new Promise((resolve) => {
     preloadFont(
       url,
       "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'\".,!?&$@…‘’“”:",
@@ -16,7 +16,7 @@ const load = (url) => {
   });
 };
 
-const useFont = (url) => {
+const useFont = (url: string): void => {
   usePromise(load, [url]);
 };
 

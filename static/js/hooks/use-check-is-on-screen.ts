@@ -2,7 +2,12 @@ import { throttle } from "lodash";
 import { useCallback } from "react";
 import * as THREE from "three";
 
-const checkIsOnScreen = (camera, object3d) => {
+const checkIsOnScreen = (
+  camera: THREE.Camera,
+  object3d: THREE.Object3D | null
+):
+  | false
+  | { isOnScreen: boolean; shouldLoad: boolean; shouldAnimate: boolean } => {
   if (!object3d) return false;
   const worldPosition = new THREE.Vector3();
   object3d.localToWorld(worldPosition);
@@ -19,9 +24,11 @@ const checkIsOnScreen = (camera, object3d) => {
   return { isOnScreen, shouldLoad, shouldAnimate };
 };
 
-const useCheckIsOnScreen = (throttleRate = 250) => {
+const useCheckIsOnScreen = (
+  throttleRate = 250
+): ((cam: THREE.Camera, object3d: THREE.Object3D | null) => any) => {
   const checkIsOnScreenThrottled = useCallback(
-    throttle((cam, object3d) => {
+    throttle((cam: THREE.Camera, object3d: THREE.Object3D | null) => {
       return checkIsOnScreen(cam, object3d);
     }, throttleRate + Math.random() * 150),
     []

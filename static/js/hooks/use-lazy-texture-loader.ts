@@ -2,20 +2,20 @@ import { useEffect, useState } from "react";
 import usePromise from "react-promise-suspense";
 import * as THREE from "three";
 
-const items = [];
+const items: { url: string; value: THREE.Texture }[] = [];
 
-const search = (url) => {
-  return (item) => {
+const search = (url: string) => {
+  return (item: { url: string }) => {
     return item.url === url;
   };
 };
 
 const cache = {
-  get: (url) => {
+  get: (url: string) => {
     const item = items.find(search(url));
     if (item) return item.value;
   },
-  set: (url, value) => {
+  set: (url: string, value: THREE.Texture) => {
     const item = items.find(search(url));
     if (item) {
       item.value = value;
@@ -25,15 +25,14 @@ const cache = {
   },
 };
 
-const load = (urlOrURLs) => {
-  return new Promise((resolve, reject) => {
-    // We can accept a url or a list of urls as args, but we need to remember to return
-    // the correct type... a texture or a list of textures
+const load = (
+  urlOrURLs: string | string[]
+): Promise<THREE.Texture | THREE.Texture[]> => {
+  return new Promise((resolve) => {
     const isArray = Array.isArray(urlOrURLs);
-    let urls = isArray ? urlOrURLs : [urlOrURLs];
-    let textures;
+    const urls = isArray ? urlOrURLs : [urlOrURLs];
+    let textures: THREE.Texture[] = [];
 
-    // Our callback for textures that need to get loaded - have we loaded all of them?
     let toLoad = 0;
     let loaded = 0;
     const onLoad = () => {
@@ -47,8 +46,6 @@ const load = (urlOrURLs) => {
       }
     };
 
-    // Map our urls to textures. In some instances, the texture for a given url may already be in
-    // the cache
     textures = urls.map((url) => {
       const cached = cache.get(url);
       if (cached) {
@@ -64,10 +61,14 @@ const load = (urlOrURLs) => {
   });
 };
 
-const useLazyTextureLoader = (urlOrURLs) => {
+const useLazyTextureLoader = (
+  urlOrURLs: string | string[]
+): THREE.Texture | THREE.Texture[] | null => {
   const deps = Array.isArray(urlOrURLs) ? urlOrURLs : [urlOrURLs];
-  const [result, setResult] = useState(
-    Array.isArray(urlOrURLs) ? [new Array(urlOrURLs.length).fill(null)] : null
+  const [result, setResult] = useState<
+    THREE.Texture | THREE.Texture[] | null
+  >(
+    Array.isArray(urlOrURLs) ? new Array(urlOrURLs.length).fill(null) : null
   );
   useEffect(() => {
     const f = async () => {
@@ -79,9 +80,11 @@ const useLazyTextureLoader = (urlOrURLs) => {
   return result;
 };
 
-export const useSuspendedTextureLoader = (urlOrURLs) => {
+export const useSuspendedTextureLoader = (
+  urlOrURLs: string | string[]
+): THREE.Texture | THREE.Texture[] => {
   const results = usePromise(load, [urlOrURLs]);
-  return results;
+  return results as THREE.Texture | THREE.Texture[];
 };
 
 export default useLazyTextureLoader;

@@ -28,7 +28,11 @@
       "context": ["static/js/context"],
       "context/*": ["static/js/context/*"],
       "store": ["static/js/store"],
-      "store/*": ["static/js/store/*"]
+      "store/*": ["static/js/store/*"],
+      "utils/*": ["static/js/utils/*"],
+      "math": ["static/js/math"],
+      "math/*": ["static/js/math/*"],
+      "pools/*": ["static/js/pools/*"]
     },
     "experimentalDecorators": true
   },
