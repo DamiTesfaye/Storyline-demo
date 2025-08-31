@@ -1,12 +1,30 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { transform } from 'esbuild';
+
+function jsxPlugin() {
+  return {
+    name: 'jsx-transform',
+    enforce: 'pre',
+    transform(code, id) {
+      if (id.endsWith('.js')) {
+        return transform(code, { loader: 'jsx', sourcemap: true });
+      }
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
-  esbuild: {
-    loader: 'jsx',
-    include: [/static\/js\/.*\.js$/, /modules\/.*\.js$/],
+  plugins: [jsxPlugin(), react({ include: ['**/*.{jsx,tsx,js,ts}'] })],
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+        '.ts': 'ts',
+        '.tsx': 'tsx',
+      },
+    },
   },
   resolve: {
     alias: {
@@ -20,7 +38,6 @@ export default defineConfig({
       context: path.resolve(__dirname, 'static/js/context'),
       pools: path.resolve(__dirname, 'static/js/pools'),
       assets: path.resolve(__dirname, 'static/js/assets'),
-      'react-router-dom': path.resolve(__dirname, 'modules'),
     },
   },
 });

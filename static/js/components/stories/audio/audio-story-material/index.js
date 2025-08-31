@@ -5,7 +5,7 @@ import fragmentShader from "./shader.frag?raw";
 // import vertexShader from "./shader.vert";
 import vertexShader from "./shader.vert?raw";
 import { useThree } from "react-three-fiber";
-import { useSpring, animated } from "react-spring/three";
+import { useSpring, animated } from "@react-spring/three";
 import { easeOutQuint as easing, easeOutCubic, easeInCubic } from "math/map";
 
 const AudioStoryMaterial = (props) => {
