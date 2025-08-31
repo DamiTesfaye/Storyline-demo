@@ -16,6 +16,7 @@ function jsxPlugin() {
 }
 
 export default defineConfig({
+  base: '/storyline/',
   plugins: [jsxPlugin(), react({ include: ['**/*.{jsx,tsx,js,ts}'] })],
   optimizeDeps: {
     esbuildOptions: {
@@ -27,7 +28,7 @@ export default defineConfig({
     },
   },
   resolve: {
-alias: [
+    alias: [
       { find: /^three$/, replacement: path.resolve(__dirname, 'three-legacy.js') },
       { find: 'components', replacement: path.resolve(__dirname, 'static/js/components') },
       { find: 'containers', replacement: path.resolve(__dirname, 'static/js/containers') },
@@ -39,6 +40,12 @@ alias: [
       { find: 'context', replacement: path.resolve(__dirname, 'static/js/context') },
       { find: 'pools', replacement: path.resolve(__dirname, 'static/js/pools') },
       { find: 'assets', replacement: path.resolve(__dirname, 'static/js/assets') },
-    ],
+    ],  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.REACT_APP_VERSION': JSON.stringify(process.env.npm_package_version),
+  },
+  test: {
+    environment: 'jsdom',
   },
 });
