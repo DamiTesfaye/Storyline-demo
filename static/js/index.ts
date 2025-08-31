@@ -3,8 +3,8 @@ import preflightFailMessage from "./preflight-fail.partial.html?raw";
 import "./index.css";
 import "./style.css";
 
-const start = async () => {
-  let module;
+const start = async (): Promise<void> => {
+  let module: any;
 
   module = await import("./preflight");
   const ok = module.check();
@@ -14,10 +14,13 @@ const start = async () => {
     module.main();
   } else {
     const root = document.getElementById("root");
-    root.innerHTML = preflightFailMessage.replace(
-      "%platform%",
-      `${platform.name} version ${platform.version}`
-    );
+    if (root) {
+      root.innerHTML = preflightFailMessage.replace(
+        "%platform%",
+        `${platform.name} version ${platform.version}`
+      );
+    }
   }
 };
+
 start();

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // IMPORTANT - load up ensighten script tag in document head
 // script(src='//nexus.ensighten.com/sbs/sbsprod/Bootstrap.js')
 

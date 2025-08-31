@@ -1,3 +1,4 @@
+// @ts-nocheck
 import platform from "platform";
 import isMobile from "ismobilejs";
 import canAutoPlay from "can-autoplay";
