@@ -27,7 +27,7 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: [
+alias: [
       { find: /^three$/, replacement: path.resolve(__dirname, 'three-legacy.js') },
       { find: 'components', replacement: path.resolve(__dirname, 'static/js/components') },
       { find: 'containers', replacement: path.resolve(__dirname, 'static/js/containers') },
