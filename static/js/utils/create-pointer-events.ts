@@ -1,4 +1,4 @@
-// The built in onClick in react-three-fiber will trigger if the user
+// The built in onClick in @react-three/fiber will trigger if the user
 // mouses down, travels their pointer, and then release back over the same object
 // which in this particular situation feels incredibly unintuitive.
 // The function below will measure how far a user has moved their cursor and if

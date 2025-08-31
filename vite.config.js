@@ -1,26 +1,52 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { transform } from 'esbuild';
+
+function jsxPlugin() {
+  return {
+    name: 'jsx-transform',
+    enforce: 'pre',
+    transform(code, id) {
+      if (id.endsWith('.js')) {
+        return transform(code, { loader: 'jsx', sourcemap: true });
+      }
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
-  esbuild: {
-    loader: 'jsx',
-    include: [/static\/js\/.*\.js$/, /modules\/.*\.js$/],
+  base: '/storyline/',
+  plugins: [jsxPlugin(), react({ include: ['**/*.{jsx,tsx,js,ts}'] })],
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+        '.ts': 'ts',
+        '.tsx': 'tsx',
+      },
+    },
   },
   resolve: {
-    alias: {
-      components: path.resolve(__dirname, 'static/js/components'),
-      containers: path.resolve(__dirname, 'static/js/containers'),
-      hooks: path.resolve(__dirname, 'static/js/hooks'),
-      math: path.resolve(__dirname, 'static/js/math'),
-      services: path.resolve(__dirname, 'static/js/services'),
-      store: path.resolve(__dirname, 'static/js/store'),
-      utils: path.resolve(__dirname, 'static/js/utils'),
-      context: path.resolve(__dirname, 'static/js/context'),
-      pools: path.resolve(__dirname, 'static/js/pools'),
-      assets: path.resolve(__dirname, 'static/js/assets'),
-      'react-router-dom': path.resolve(__dirname, 'modules'),
-    },
+    alias: [
+      { find: /^three$/, replacement: path.resolve(__dirname, 'three-legacy.js') },
+      { find: 'components', replacement: path.resolve(__dirname, 'static/js/components') },
+      { find: 'containers', replacement: path.resolve(__dirname, 'static/js/containers') },
+      { find: 'hooks', replacement: path.resolve(__dirname, 'static/js/hooks') },
+      { find: 'math', replacement: path.resolve(__dirname, 'static/js/math') },
+      { find: 'services', replacement: path.resolve(__dirname, 'static/js/services') },
+      { find: 'store', replacement: path.resolve(__dirname, 'static/js/store') },
+      { find: 'utils', replacement: path.resolve(__dirname, 'static/js/utils') },
+      { find: 'context', replacement: path.resolve(__dirname, 'static/js/context') },
+      { find: 'pools', replacement: path.resolve(__dirname, 'static/js/pools') },
+      { find: 'assets', replacement: path.resolve(__dirname, 'static/js/assets') },
+    ],
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.REACT_APP_VERSION': JSON.stringify(process.env.npm_package_version),
+  },
+  test: {
+    environment: 'jsdom',
   },
 });

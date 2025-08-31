@@ -7,7 +7,7 @@ import img from "./fillet-alpha-map.png";
 const size = 0.2;
 const antialiasFix = 0.0015;
 const shared = {
-  geometry: new THREE.PlaneBufferGeometry(size, size),
+  geometry: new THREE.PlaneGeometry(size, size),
   material: new THREE.MeshBasicMaterial({
     color: "white",
     flatShading: true,

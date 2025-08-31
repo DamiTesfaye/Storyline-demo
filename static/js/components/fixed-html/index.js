@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useThree } from "react-three-fiber";
+import { useThree } from "@react-three/fiber";
 
 const FixedHTML = React.forwardRef((props, ref) => {
   const { children, styles, className, prepend, portal } = props;

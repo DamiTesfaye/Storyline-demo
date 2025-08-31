@@ -11,7 +11,7 @@ import { useStore } from "hooks/use-store";
 import "pepjs";
 import React, { Suspense, useEffect, useState } from "react";
 import { Route, Router } from "react-router-dom";
-import { Canvas } from "react-three-fiber";
+import { Canvas } from "@react-three/fiber";
 import Analytics from "services/analytics";
 import glQuality from "services/gl-quality";
 import issues from "services/issues";
