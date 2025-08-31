@@ -9,7 +9,7 @@ import StoryBrowser from "containers/story-browser";
 import { createBrowserHistory } from "history";
 import { useStore } from "hooks/use-store";
 import "pepjs";
-import { default as React, Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Route, Router } from "react-router-dom";
 import { Canvas } from "react-three-fiber";
 import Analytics from "services/analytics";
@@ -17,25 +17,25 @@ import glQuality from "services/gl-quality";
 import issues from "services/issues";
 const serviceURL = "data/content.json";
 
-const useFetch = (url, options) => {
-  const [response, setResponse] = useState(null);
+const useFetch = <T = any>(url: string, options?: RequestInit): T | null => {
+  const [response, setResponse] = useState<T | null>(null);
   useEffect(() => {
     const doFetch = async () => {
       const res = await fetch(url, options);
       const json = await res.json();
       setResponse(json);
     };
-    doFetch();
-  }, []);
+    void doFetch();
+  }, [url, options]);
   return response;
 };
 
-const App = () => {
+const App: React.FC = () => {
   const store = useStore();
   const history = createBrowserHistory({
     basename: process.env.NODE_ENV === "production" ? "/storyline" : "/",
   });
-  const data = useFetch(serviceURL);
+  const data = useFetch<any>(serviceURL);
   useEffect(() => {
     if (data) {
       // Randomise the video content so things feel fresh on revisits
