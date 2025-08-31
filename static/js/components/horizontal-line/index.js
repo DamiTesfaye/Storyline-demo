@@ -2,7 +2,7 @@ import React from "react";
 import * as THREE from "three";
 
 const shared = {
-  geometry: new THREE.PlaneBufferGeometry(1000, 0.01),
+  geometry: new THREE.PlaneGeometry(1000, 0.01),
   material: new THREE.MeshBasicMaterial({ color: "white", flatShading: true }),
 };
 

@@ -4,7 +4,7 @@ import { lerp } from "math";
 import { interpolate } from "math/array";
 import { easeInOutQuint, map } from "math/map";
 import { default as React, useEffect, useMemo, useRef } from "react";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import analyser from "./analyser";
 import phoneImageSrc from "./phone.png";

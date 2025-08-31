@@ -10,7 +10,7 @@ import { default as React, useEffect, useMemo, useState } from "react";
 import Grid from "services/grid";
 import * as THREE from "three";
 import issues from "services/issues";
-import { useThree } from "react-three-fiber";
+import { useThree } from "@react-three/fiber";
 // import Analytics from "services/analytics";
 
 // This offset will move all the children down a bit...

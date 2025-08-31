@@ -6,7 +6,7 @@ import { isEqual } from "lodash";
 import { lerp } from "math";
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { useSpring } from "react-spring";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import largeAlphaMap from "./large-alpha-map.png";
 import smallAlphaMap from "./small-alpha-map.png";

@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
-import { extend } from "react-three-fiber";
+import { extend } from "@react-three/fiber";
 import * as THREE from "three";
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from "threejs-meshline";
 import FilletCorner from "../video/fillet-corner";
 import { isEqual } from "lodash";
-import { PlaneBufferGeometry } from "three";
+import { PlaneGeometry } from "three";
 extend(MeshLine, MeshLineMaterial, MeshLineRaycast);
 
 const shared = {
-  geometry: new THREE.PlaneBufferGeometry(0.01, 1),
+  geometry: new THREE.PlaneGeometry(0.01, 1),
   material: new THREE.MeshBasicMaterial({
     color: 0xffffff,
   }),

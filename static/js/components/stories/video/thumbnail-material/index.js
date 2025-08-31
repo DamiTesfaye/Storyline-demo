@@ -1,11 +1,11 @@
 import { easeOutQuint as easing } from "math/map";
 import React, { useEffect, useLayoutEffect, useMemo } from "react";
-import { animated, useSpring, config } from "react-spring/three";
+import { animated, useSpring, config } from "@react-spring/three";
 import * as THREE from "three";
-import fragmentShader from "./shader.frag";
+import fragmentShader from "./shader.frag?raw";
 // import vertexShader from "./shader.vert";
 import vertexShader from "./shader.vert?raw";
-import { useFrame } from "react-three-fiber";
+import { useFrame } from "@react-three/fiber";
 
 const ThumbnailMaterial = React.forwardRef((props, ref) => {
   //console.log(props.offsetX);

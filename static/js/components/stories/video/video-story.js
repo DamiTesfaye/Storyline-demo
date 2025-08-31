@@ -1,6 +1,6 @@
 import Chance from "chance";
 import Subtitles from "components/subtitles";
-import { HTML } from "drei";
+import { Html } from "@react-three/drei";
 import useCheckIsOnScreen from "hooks/use-check-is-on-screen";
 import useMedia from "hooks/use-media";
 import { useStore } from "hooks/use-store";
@@ -9,7 +9,7 @@ import useWhyDidYouUpdate from "hooks/use-why-did-you-update";
 import { isEqual } from "lodash";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useFrame, useThree } from "react-three-fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import createPointerEvents from "utils/create-pointer-events";
 import Tile from "./tile";
 import issues from "services/issues";
@@ -187,14 +187,14 @@ const VideoStory = (props) => {
             <Subtitles video={video} vttURL={`videos/${props.id}.vtt`} />
           </FixedHTML>
         ) : (
-          <HTML
+          <Html
             position={[0, 0, 0.7]}
             zIndexRange={[100, 0]}
             portal={ui}
             center={true}
           >
             <Subtitles video={video} vttURL={`videos/${props.id}.vtt`} />
-          </HTML>
+          </Html>
         )
       ) : null}
     </group>
