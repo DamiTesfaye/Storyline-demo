@@ -40,8 +40,7 @@ export default defineConfig({
       { find: 'context', replacement: path.resolve(__dirname, 'static/js/context') },
       { find: 'pools', replacement: path.resolve(__dirname, 'static/js/pools') },
       { find: 'assets', replacement: path.resolve(__dirname, 'static/js/assets') },
-    ],
-  },
+    ],  },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.REACT_APP_VERSION': JSON.stringify(process.env.npm_package_version),
